@@ -59,6 +59,103 @@ mezcla concepto de scope y closures
 
 ----------
 
+MINUTA 11/03 - Udacity OOJS
+---------------------------
+Código de ejemplo para el módulo de Closures. Resta documentar cada ejemplo:
+
+    function counter() {
+        var count = 0;
+     
+        function counter() {
+            count ++;
+            console.log(count);
+        }
+     
+    }
+     
+    function f(arg) {
+     
+        var n = function(){
+            return arg;
+        };
+     
+        arg++;
+     
+        return n;
+    }
+     
+    function f() {
+        var a = [];
+        var i;
+     
+        for(i = 0; i < 3; i++) {
+            a[i] = function(){
+                return i;
+            }
+        }
+        return a;
+    }
+     
+    function f() {
+        var a = [];
+        var i;
+     
+        for(i = 0; i < 3; i++) {
+     
+            a[i] = (function(x){
+                return function(){
+                    return x;
+                }
+            })(i);
+        }
+        return a;
+    }
+     
+    function Modal() {
+     
+        // creo el subcoment
+        function Underlay() {
+     
+            // inicializo
+            // creo un div
+            // lo pinto de negro
+            // llamo a ajax
+            // hago tood por unica vez
+     
+     
+            // devuelvo una nueva funcionalidad
+            return function() {
+                // show o hide
+            }
+        }
+     
+        var toogleUnderlay = Underlay();
+     
+     
+        this.show = function (){
+            toogleUnderlay();
+        }
+     
+        this.hide = function (){
+            toogleUnderlay();
+        }
+     
+    }
+     
+    /**
+     * Documentar estos ejemplos
+     *
+     *
+     */
+    function Saludar() {
+        var text = 'Hola ';
+     
+        Saludar = function SigoSaludando(nombre) {
+            return text + nombre;
+        }
+     
+    }
+
 ### Table of contents
 
 [TOC]
