@@ -156,6 +156,94 @@ Código de ejemplo para el módulo de Closures. Resta documentar cada ejemplo:
      
     }
 
+----------
+MINUTA 18/03 - Udacity OOJS
+---------------------------
+
+> "The bad news is in ES3, this loses its way and refers to the head
+> object (window object in browsers), instead of the object within which  the function is defined.  In the code below, this inside of func2 and  func3 loses its way and refers not to myObject but instead to the head  object."
+
+    var myObject = {
+    	func1: function() {
+    		console.log(this); // logs myObject
+    		var func2 = function() {
+    			console.log(this) // logs window, and will do so from this point on
+    			var func3 = function() {
+    				console.log(this); // logs window, as it's the head object
+    			}();
+    		}();
+    	}
+    }
+    myObject.func1();
+
+    new Car() ; // {} <<<< this.
+    
+    function Car() { // se invoca normalmente usa el return, cuando se invoca con new devuelve el this
+    	var model = '';
+      	
+      	this.model = 'Audi'; // window.model = "Audi";
+    
+    	return 'Peugeot'; // devuelve Peugeot
+      	return this;
+    }
+    
+    
+    
+    function Car (oil) {
+    	var oil = oil,
+            minOilLevel = 100; // definir en scope de Car
+    
+        function checkOil() {
+          return oil;
+        }
+      
+      
+      // si ejecuto con new crea en objeto, devuelve el objeto this
+      this.turnOn = function() { // this. para definir un metodo
+      
+        if (checkOil() > minOilLevel) {
+        	return 'Turned On';
+        } else {
+        	return 'Please check oil level, it is lower than 100';
+        }
+      
+      }
+      
+      this.fillOil = function (o){
+      	oil = o;
+      }
+    
+    }
+    
+    // fn.call(this|<scope>, param1, param2, param3) // this es un parametro en el metodo call de todas las funciones, y además es un objeto
+    // fn.apply(this, []) >>> []
+    
+    function Car (oil) {
+    	var oil = oil,
+            minOilLevel = 100,
+            this = {}; // definir en scope de Car
+    
+        function checkOil() {
+          return oil;
+        }
+      
+      // si ejecuto con new crea en objeto, devuelve el objeto this
+      this.turnOn = function() { // this. para definir un metodo
+      
+        if (checkOil() > minOilLevel) {
+        	return 'Turned On';
+        } else {
+        	return 'Please check oil level, it is lower than 100';
+        
+      }
+      
+      this.fillOil = function (o){
+      	oil = o;
+      }
+      
+      return obj;
+    }
+
 ### Table of contents
 
 [TOC]
