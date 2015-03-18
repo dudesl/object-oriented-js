@@ -159,6 +159,8 @@ Código de ejemplo para el módulo de Closures. Resta documentar cada ejemplo:
 ----------
 MINUTA 18/03 - Udacity OOJS
 ---------------------------
+http://www.codeshare.io/T4zWL
+
 
 > "The bad news is in ES3, this loses its way and refers to the head
 > object (window object in browsers), instead of the object within which  the function is defined.  In the code below, this inside of func2 and  func3 loses its way and refers not to myObject but instead to the head  object."
