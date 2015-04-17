@@ -246,6 +246,99 @@ http://www.codeshare.io/T4zWL
       return obj;
     }
 
+----------
+MINUTA 16/04 - Udacity OOJS
+---------------------------
+###Decorator Pattern 
+
+>"(...)You start with your plain object, which has some basic functionality. Then you pick and choose from an available pool of decorators which ones you want to use to enhance your plain object(...)"
+
+Código de práctica - http://www.codeshare.io/E2BX6
+
+Esté código está basado en la definición y ejemplos del libro _JS Patterns_. 
+En el mismo presenta este patrón como una superposición de capas que mejoran una funcionalidad básica, según los requerimientos que se le agregan.
+
+Comenzamos con un Objeto básico:
+
+    // Constructor
+    function Sale(price) {
+        // Attribute
+        this.price = price || 100; 
+    }
+
+    // Método 
+    Sale.prototype.getPrice = function () {
+        return this.price;
+    }
+
+Su funcionalidad básica es devolver el precio:
+
+    // creamos una instancia
+    var product = new Sale(200); 
+
+    // Solicitamos el precio
+    product.getPrice(); // 200
+
+-*Decorator Pattern*-
+Generamos los decorators que van a "extender" la funcionalidad base:
+
+    // Creamos un objeto
+    Sale.decorators = {};
+
+    // le agregamos propiedades
+    Sale.decorators.esAR = { // precio en Argentina
+        getPrice = function() {
+            return '$' + this.base.getPrice(); // base o el nombre que definamos en la función "decorator"
+        }
+    };
+
+    Sale.decorators.esVE = { // precio en Venezuela
+        getPrice = function() {
+            return 'PB Justo BS. ' + this.base.getPrice(); // base o el nombre que definamos en la función "decorator"
+        }
+    };
+
+Ahora definimos el metodo *__decorate__*, el cual recibira como parametro el nombre del decorador que queremos utilizar:
+
+    Sale.prototype.decorate = function (decoratorName) { 
+    
+        var F = function () {},
+            decorator = this.constructor.decorators[decoratorName],
+            i, newobj;
+        
+        // F es un nuevo objeto y lo igualamos a {Sale}
+        F.prototype = this; // this --> apunta a la instancia que está ejecutando este método (quien está a la izaquierda del ".")
+
+        newobj = new F(); // Instanciamos el nuevo objeto
+        newobj.base = F.prototype;  // en la instancia creada guardamos la referencia al objeto base
+        
+        for (i in decorator) { // Recorremos el decorator en busca de sus elementos (propiedades)
+            if (decorator.hasOwnProperty(i)) {
+                newobj[i] = decorator[i]; // Guardamos en la instancia las propiedades definidas en el decorator
+            }
+        }
+      
+        return newobj; 
+    };
+
+Con este método lo que hacemos es generar una capa con la funcionalidad agregada, entonces ahora podemos obtener un objeto enriquecido a partir de la primer intancia (_product_):
+
+    var product_esAR = product.decorate('esAR'); 
+    // este obj tiene la funcionalidad básica definida en Sale
+    // + la funcionalidad específica para Argentina (agregada en el decorator)
+
+    var product_esVE = product.decorate('esVE');
+
+Para aclarar, esto devolvería el metodo _.getPrice()_ según quien lo invoque:
+    
+    product.getPrice(); // 200
+    product_esAR.getPrice(); // "$200"
+    product_esVE.getPrice(); // "PV Justo BS. 200"
+
+En resumen, 
+este patrón tal como su nombre lo indica "decora" una funcionalidad básica agergandole capas de especificación según el contexto en el que se invocan.
+
+
 ### Table of contents
 
 [TOC]
