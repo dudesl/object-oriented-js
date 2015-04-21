@@ -246,6 +246,157 @@ http://www.codeshare.io/T4zWL
       return obj;
     }
 
+
+----------
+
+MINUTA 08/04 - Udacity OOJS
+---------------------------
+
+## Prototype Chains 
+
+>   [código de referencia - udacity](http://www.codeshare.io/Fv8Dr)
+
+Este concepto se basa en enlazar distintos objetos, mediante el uso de la propiedad **_prototype_** existente en toda función.
+
+Para entender mejor este concepto, a continuación detallamos un ejemplo práctico de su uso
+
+    // Primero declaramos las funciones constructoras
+    function Perro() {
+        this.raza = 'undefined';
+        this.patas = 4;
+    }
+    function Caniche() {
+        this.raza = 'Caniche';
+        this.tamanio = 'mediano';
+    }
+    function CanicheToy() {
+        this.raza = 'Caniche Toy';
+        this.tamanio = 'chico';
+    }
+    function ObejeroAleman() {
+        this.tamanio = 'grande';
+    }
+
+Una vez que tenemos las funciones constructoras definidas, podemos indicarles de que Objeto van a estar heredando, utilizando la propiedad `prototype`_(tengamos en cuenta que se guarda una instancia del objeto)_.
+
+    // Inherits by prototype
+    ObejeroAleman.prototype = new Perro();
+    Caniche.prototype = new Perro();
+    CanicheToy.prototype = new Caniche();
+
+Al ejecutar estas sentencias, lo que estamos haciendo es referenciar la instancia generada (new) al prototype de nuestro objeto, generando así una herencia entre ellos.
+De esta manera, nuestros objetos van a poder acceder a los atributos y métodos definidos en el objeto referido.
+
+> en el código de algunos navegadores podemos ver esta relación mediante la propiedad `__proto__` de un objeto.
+
+Acá un ejemplo de dicha herencia.
+
+    // Instancias
+    var indio = new ObejeroAleman(),
+        toby = new Caniche(),
+        oso = new CanicheToy();
+    
+    // Propiedades
+    console.log(toby.raza); // Caniche
+    console.log(oso.raza); // Caniche Toy
+    console.log(indio.raza); // undefined
+
+En el código precedente, la instancia `indio` busca la propiedad _raza_ dentro de sí misma, cuando no la encuentra, busca en el objeto referido (del cual hereda). De la misma manera el objeto referido acciona de la misma forma generando así una cadena de herencia.
+
+
+----------
+MINUTA 16/04 - Udacity OOJS
+---------------------------
+###Decorator Pattern 
+
+>"(...)You start with your plain object, which has some basic functionality. Then you pick and choose from an available pool of decorators which ones you want to use to enhance your plain object(...)"
+
+Código de práctica - http://www.codeshare.io/E2BX6
+
+Esté código está basado en la definición y ejemplos del libro _JS Patterns_. 
+En el mismo presenta este patrón como una superposición de capas que mejoran una funcionalidad básica, según los requerimientos que se le agregan.
+
+Comenzamos con un Objeto básico:
+
+    // Constructor
+    function Sale(price) {
+        // Attribute
+        this.price = price || 100; 
+    }
+
+    // Método 
+    Sale.prototype.getPrice = function () {
+        return this.price;
+    }
+
+Su funcionalidad básica es devolver el precio:
+
+    // creamos una instancia
+    var product = new Sale(200); 
+
+    // Solicitamos el precio
+    product.getPrice(); // 200
+
+-*Decorator Pattern*-
+Generamos los decorators que van a "extender" la funcionalidad base:
+
+    // Creamos un objeto
+    Sale.decorators = {};
+
+    // le agregamos propiedades
+    Sale.decorators.esAR = { // precio en Argentina
+        getPrice = function() {
+            return '$' + this.base.getPrice(); // base o el nombre que definamos en la función "decorator"
+        }
+    };
+
+    Sale.decorators.esVE = { // precio en Venezuela
+        getPrice = function() {
+            return 'PB Justo BS. ' + this.base.getPrice(); // base o el nombre que definamos en la función "decorator"
+        }
+    };
+
+Ahora definimos el metodo *__decorate__*, el cual recibira como parametro el nombre del decorador que queremos utilizar:
+
+    Sale.prototype.decorate = function (decoratorName) { 
+    
+        var F = function () {},
+            decorator = this.constructor.decorators[decoratorName],
+            i, newobj;
+        
+        // F es un nuevo objeto y lo igualamos a {Sale}
+        F.prototype = this; // this --> apunta a la instancia que está ejecutando este método (quien está a la izaquierda del ".")
+
+        newobj = new F(); // Instanciamos el nuevo objeto
+        newobj.base = F.prototype;  // en la instancia creada guardamos la referencia al objeto base
+        
+        for (i in decorator) { // Recorremos el decorator en busca de sus elementos (propiedades)
+            if (decorator.hasOwnProperty(i)) {
+                newobj[i] = decorator[i]; // Guardamos en la instancia las propiedades definidas en el decorator
+            }
+        }
+      
+        return newobj; 
+    };
+
+Con este método lo que hacemos es generar una capa con la funcionalidad agregada, entonces ahora podemos obtener un objeto enriquecido a partir de la primer intancia (_product_):
+
+    var product_esAR = product.decorate('esAR'); 
+    // este obj tiene la funcionalidad básica definida en Sale
+    // + la funcionalidad específica para Argentina (agregada en el decorator)
+
+    var product_esVE = product.decorate('esVE');
+
+Para aclarar, esto devolvería el metodo _.getPrice()_ según quien lo invoque:
+    
+    product.getPrice(); // 200
+    product_esAR.getPrice(); // "$200"
+    product_esVE.getPrice(); // "PV Justo BS. 200"
+
+En resumen, 
+este patrón tal como su nombre lo indica "decora" una funcionalidad básica agergandole capas de especificación según el contexto en el que se invocan.
+
+
 ### Table of contents
 
 [TOC]
