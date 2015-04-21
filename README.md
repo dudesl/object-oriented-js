@@ -246,6 +246,64 @@ http://www.codeshare.io/T4zWL
       return obj;
     }
 
+
+----------
+
+MINUTA 08/04 - Udacity OOJS
+---------------------------
+
+## Prototype Chains 
+
+>   [código de referencia - udacity](http://www.codeshare.io/Fv8Dr)
+
+Este concepto se basa en enlazar distintos objetos, mediante el uso de la propiedad **_prototype_** existente en toda función.
+
+Para entender mejor este concepto, a continuación detallamos un ejemplo práctico de su uso
+
+    // Primero declaramos las funciones constructoras
+    function Perro() {
+        this.raza = 'undefined';
+        this.patas = 4;
+    }
+    function Caniche() {
+        this.raza = 'Caniche';
+        this.tamanio = 'mediano';
+    }
+    function CanicheToy() {
+        this.raza = 'Caniche Toy';
+        this.tamanio = 'chico';
+    }
+    function ObejeroAleman() {
+        this.tamanio = 'grande';
+    }
+
+Una vez que tenemos las funciones constructoras definidas, podemos indicarles de que Objeto van a estar heredando, utilizando la propiedad `prototype`_(tengamos en cuenta que se guarda una instancia del objeto)_.
+
+    // Inherits by prototype
+    ObejeroAleman.prototype = new Perro();
+    Caniche.prototype = new Perro();
+    CanicheToy.prototype = new Caniche();
+
+Al ejecutar estas sentencias, lo que estamos haciendo es referenciar la instancia generada (new) al prototype de nuestro objeto, generando así una herencia entre ellos.
+De esta manera, nuestros objetos van a poder acceder a los atributos y métodos definidos en el objeto referido.
+
+> en el código de algunos navegadores podemos ver esta relación mediante la propiedad `__proto__` de un objeto.
+
+Acá un ejemplo de dicha herencia.
+
+    // Instancias
+    var indio = new ObejeroAleman(),
+        toby = new Caniche(),
+        oso = new CanicheToy();
+    
+    // Propiedades
+    console.log(toby.raza); // Caniche
+    console.log(oso.raza); // Caniche Toy
+    console.log(indio.raza); // undefined
+
+En el código precedente, la instancia `indio` busca la propiedad _raza_ dentro de sí misma, cuando no la encuentra, busca en el objeto referido (del cual hereda). De la misma manera el objeto referido acciona de la misma forma generando así una cadena de herencia.
+
+
 ----------
 MINUTA 16/04 - Udacity OOJS
 ---------------------------
